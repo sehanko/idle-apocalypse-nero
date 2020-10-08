@@ -3,21 +3,19 @@ package game
 import "time"
 
 var (
-	Level0 = Level{0, ZeroResources, ZeroResources}
-
-	mob1 = NewMob("SD-DX", time.Second*5, ZeroResources)
-	mob2 = NewMob("Alien", time.Second*10, NewResources(3, 0, 0, 0))
-	mob3 = NewMob("Mudrox", time.Second*15, ZeroResources)
-	mob4 = NewMob("Xertorifiro Xato", time.Second*5, NewResources(0, 6, 0, 0))
+	mob1 = NewMob("Trinity", time.Second*5)
+	mob2 = NewMob("Alien", time.Second*10)
 
 	mob1Rewards = map[int]Level{
-		1: Level{Cost: NewResources(0, 0, 0, 0)},
+		1: Level{Cost: ZeroResources, Produce: NewResources(BlueResource(1))},
+		2: Level{Cost: ZeroResources, Produce: NewResources(BlueResource(2))},
+		3: Level{Cost: ZeroResources, Produce: NewResources(BlueResource(3))},
+		4: Level{Cost: ZeroResources, Produce: NewResources(BlueResource(4))},
 	}
 )
 
 type Mob struct {
 	Name      string
-	Cost      Resources
 	SpawnTime time.Duration
 	LastSpawn time.Time
 	Level     Level
@@ -29,13 +27,12 @@ type Level struct {
 	Produce Resources
 }
 
-func NewMob(name string, spawnTime time.Duration, cost Resources) *Mob {
+func NewMob(name string, spawnTime time.Duration) *Mob {
 	return &Mob{
 		name,
-		cost,
 		spawnTime,
 		time.Now(),
-		Level0,
+		mob1Rewards[0],
 	}
 }
 

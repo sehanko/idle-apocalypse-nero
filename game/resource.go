@@ -1,16 +1,17 @@
 package game
 
 var (
-	ZeroResources = NewResources(0, 0, 0, 0)
+	ZeroResources = NewResources()
+	ZeroValue     = ResourceValue{Resource: nil, Value: 0}
 
-	BlueResource  = Resource{"Blueium Rod", "blue"}
+	blueResource  = Resource{"Blueium Rod", "blue"}
 	GreenResource = Resource{"Greenium Rod", "green"}
 	RedResource   = Resource{"Redium Rod", "red"}
 	GoldResource  = Resource{"Goldium Rod", "gold"}
 )
 
 type Resources struct {
-	Values map[Resource]int
+	Values map[*Resource]int
 }
 
 type Resource struct {
@@ -18,25 +19,24 @@ type Resource struct {
 	Color string
 }
 
-// NewResources creating set of resources
-func NewResources(blue, green, red, gold int) Resources {
-	values := make(map[Resource]int, 0)
-	res := Resources{values}
+type ResourceValue struct {
+	*Resource
+	Value int
+}
 
-	if blue > 0 {
-		res.Values[BlueResource] = blue
+func BlueResource(val int) ResourceValue {
+	return ResourceValue{
+		Resource: &blueResource,
+		Value:    val,
 	}
+}
 
-	if green > 0 {
-		res.Values[GreenResource] = green
-	}
+func NewResources(values ...ResourceValue) Resources {
+	val := make(map[*Resource]int, len(values))
+	res := Resources{val}
 
-	if red > 0 {
-		res.Values[RedResource] = red
-	}
-
-	if gold > 0 {
-		res.Values[GoldResource] = gold
+	for _, v := range values {
+		res.Values[v.Resource] = v.Value
 	}
 
 	return res
@@ -52,7 +52,7 @@ func (rr *Resources) Append(r Resources) {
 	}
 }
 
-func (rr *Resources) Add(res Resource, value int) {
+func (rr *Resources) Add(res *Resource, value int) {
 	_, ok := rr.Values[res]
 
 	// Есил в списке небыло - добавляем

@@ -17,8 +17,6 @@ func NewWorld() *World {
 
 	world.AddMob(mob1)
 	world.AddMob(mob2)
-	world.AddMob(mob3)
-	world.AddMob(mob4)
 
 	world.player = NewPlayer()
 
