@@ -8,10 +8,9 @@ import (
 const globalTick = 1 * time.Second
 
 type World struct {
-	mobs []*Mob
+	mobs   []*Mob
 	player Player
 }
-
 
 func NewWorld() *World {
 	world := World{}
@@ -28,23 +27,21 @@ func NewWorld() *World {
 
 func (w *World) Run() {
 	//go func() {
-		for range time.Tick(globalTick) {
-			for _, mob := range w.mobs {
-				minerals := mob.Tick()
+	for range time.Tick(globalTick) {
+		for _, mob := range w.mobs {
+			resources := mob.Tick()
 
-				if minerals.IsEmpty() {
-					continue
-				}
-
-				w.player.Minerals.Append(&minerals)
+			if resources.IsEmpty() {
+				continue
 			}
 
-
-			fmt.Println(w.player)
+			w.player.Res.Append(resources)
 		}
+
+		fmt.Println(w.player)
+	}
 	//}()
 }
-
 
 func (w *World) AddMob(mob *Mob) {
 	w.mobs = append(w.mobs, mob)

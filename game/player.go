@@ -1,9 +1,9 @@
 package game
 
 type Player struct {
-	Minerals Minerals
+	Res Resources
 }
 
 func NewPlayer() Player {
-	return Player{ZeroMinerals}
+	return Player{ZeroResources}
 }

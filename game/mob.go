@@ -3,33 +3,33 @@ package game
 import "time"
 
 var (
-	Level0 = Level{0, ZeroMinerals, ZeroMinerals}
+	Level0 = Level{0, ZeroResources, ZeroResources}
 
-	mob1 = NewMob("SD-DX", time.Second * 5, ZeroMinerals)
-	mob2 = NewMob("Alien", time.Second * 10, NewMinerals(3,0 ,0 ,0))
-	mob3 = NewMob("Mudrox", time.Second * 15, ZeroMinerals)
-	mob4 = NewMob("Xertorifiro Xato", time.Second * 5, NewMinerals(0, 6,0 ,0))
+	mob1 = NewMob("SD-DX", time.Second*5, ZeroResources)
+	mob2 = NewMob("Alien", time.Second*10, NewResources(3, 0, 0, 0))
+	mob3 = NewMob("Mudrox", time.Second*15, ZeroResources)
+	mob4 = NewMob("Xertorifiro Xato", time.Second*5, NewResources(0, 6, 0, 0))
 
 	mob1Rewards = map[int]Level{
-		1: Level{Cost: NewMinerals()}
+		1: Level{Cost: NewResources(0, 0, 0, 0)},
 	}
 )
 
 type Mob struct {
-	Name string
-	Cost Minerals
+	Name      string
+	Cost      Resources
 	SpawnTime time.Duration
 	LastSpawn time.Time
-	Level Level
+	Level     Level
 }
 
 type Level struct {
-	Value int
-	Cost Minerals
-	Produce Minerals
+	Value   int
+	Cost    Resources
+	Produce Resources
 }
 
-func NewMob(name string, spawnTime time.Duration, cost map[Mineral]int) *Mob {
+func NewMob(name string, spawnTime time.Duration, cost Resources) *Mob {
 	return &Mob{
 		name,
 		cost,
@@ -39,10 +39,9 @@ func NewMob(name string, spawnTime time.Duration, cost map[Mineral]int) *Mob {
 	}
 }
 
-func (m *Mob) Tick() Minerals {
-	// Если время тика не настало
-	if (time.Since(m.LastSpawn) < m.SpawnTime) {
-		return ZeroMinerals
+func (m *Mob) Tick() Resources {
+	if time.Since(m.LastSpawn) < m.SpawnTime {
+		return ZeroResources
 	}
 
 	m.LastSpawn = time.Now()
