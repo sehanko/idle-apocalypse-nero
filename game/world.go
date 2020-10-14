@@ -33,7 +33,8 @@ func (w *World) Run() {
 				continue
 			}
 
-			w.player.Res.Append(resources)
+			w.player.Res.Append(&resources)
+
 		}
 
 		fmt.Println(w.player)

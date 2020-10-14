@@ -67,4 +67,13 @@ func (m *Mob) LevelUp(res *Resources) bool {
 	}
 
 	nextLvl := m.Levels[curLvl+1]
+
+	success := res.Widthdraw(&nextLvl.Cost)
+
+	if success {
+		m.Level = nextLvl
+		return true
+	}
+
+	return false
 }

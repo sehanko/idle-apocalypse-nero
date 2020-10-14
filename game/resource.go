@@ -67,8 +67,11 @@ func (rr *Resources) IsEmpty() bool {
 	return len(rr.Values) <= 0
 }
 
-func (rr *Resources) Append(r Resources) {
-	for res, v := range rr.Values {
+func (rr *Resources) Append(r *Resources) {
+	rr.mx.Lock()
+	defer rr.mx.Unlock()
+
+	for res, v := range r.Values {
 		rr.Add(res, v)
 	}
 }
@@ -76,7 +79,7 @@ func (rr *Resources) Append(r Resources) {
 func (rr *Resources) Add(res *Resource, value int) {
 	_, ok := rr.Values[res]
 
-	// Есил в списке небыло - добавляем
+	// Add new resources
 	if !ok {
 		rr.Values[res] = value
 		return
@@ -85,14 +88,14 @@ func (rr *Resources) Add(res *Resource, value int) {
 	rr.Values[res] += value
 }
 
-func (rr *Resources) Available(val *ResourceValue) bool {
-	res, ok := rr.Values[val.Resource]
+func (rr *Resources) Available(res *Resource, val int) bool {
+	curVal, ok := rr.Values[res]
 
 	if !ok {
 		return false
 	}
 
-	if res >= val.Value {
+	if curVal >= val {
 		return true
 	}
 
@@ -103,11 +106,16 @@ func (rr *Resources) Widthdraw(res *Resources) bool {
 	rr.mx.Lock()
 	defer rr.mx.Unlock()
 
+	// check for aviability
 	for r, val := range res.Values {
-		if !rr.Available(r) {
+		if !rr.Available(r, val) {
 			return false
 		}
 	}
 
+	// widthdraw
+	for r, val := range res.Values {
+		rr.Values[r] -= val
+	}
 	return true
 }
