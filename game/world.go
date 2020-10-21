@@ -8,19 +8,20 @@ import (
 const globalTick = 1 * time.Second
 
 type World struct {
-	mobs   []*Mob
-	player Player
+	mobs  []*Mob
+	res   Resources
+	boost *Booster
 }
 
 func NewWorld() *World {
-	world := World{}
+	w := World{}
 
-	world.AddMob(mob1)
-	world.AddMob(mob2)
+	w.AddMob(mob1)
+	w.AddMob(mob2)
 
-	world.player = NewPlayer()
+	w.boost = NewBooster()
 
-	return &world
+	return &w
 }
 
 func (w *World) Run() {
@@ -33,15 +34,25 @@ func (w *World) Run() {
 				continue
 			}
 
-			w.player.Res.Append(&resources)
+			w.res.Append(&resources)
 
+			success := mob.LevelUp(&w.res)
+
+			if success {
+				fmt.Println("mob ", mob.Name, " updated, level ", mob.Level.Value)
+			}
 		}
 
-		fmt.Println(w.player)
+		fmt.Println(w.res)
 	}
 	//}()
 }
 
 func (w *World) AddMob(mob *Mob) {
 	w.mobs = append(w.mobs, mob)
+}
+
+func (w *World) AddBoost(b 
+	Boost) {
+	w.boost.Add(b)
 }

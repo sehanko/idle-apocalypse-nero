@@ -102,7 +102,7 @@ func (rr *Resources) Available(res *Resource, val int) bool {
 	return false
 }
 
-func (rr *Resources) Widthdraw(res *Resources) bool {
+func (rr *Resources) WidthdrawList(res *Resources) bool {
 	rr.mx.Lock()
 	defer rr.mx.Unlock()
 
@@ -117,5 +117,18 @@ func (rr *Resources) Widthdraw(res *Resources) bool {
 	for r, val := range res.Values {
 		rr.Values[r] -= val
 	}
+	return true
+}
+
+func (rr *Resources) Widthdraw(res *ResourceValue) bool {
+	rr.mx.Lock()
+	defer rr.mx.Unlock()
+
+	if !rr.Available(res.Resource, res.Value) {
+		return false
+	}
+
+	rr.Values[res.Resource] -= res.Value
+
 	return true
 }
